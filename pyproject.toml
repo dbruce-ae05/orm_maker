@@ -7,8 +7,8 @@ authors = [
 ]
 readme = "README.md"
 license = "GPL-3.0-or-later"
-repository = 'https://github.com/dbruce-ae05/orm_maker'
-homepage = 'https://github.com/dbruce-ae05/orm_maker'
+repository = 'https://github.com/dbruce-ae05/orm-maker'
+homepage = 'https://github.com/dbruce-ae05/orm-maker'
 keywords = ['ORM', 'orm', 'object', 'relational', 'model', 'sql', 'sqlalchemy']
 requires-python = ">=3.9"
 dependencies = [
