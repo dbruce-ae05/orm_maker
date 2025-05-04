@@ -1,11 +1,15 @@
 [project]
 name = "orm-maker"
 version = "0.1.3"
-description = "Objection Relation Model Maker"
+description = "Objection Relation Model Maker for SQLAlchemy"
 authors = [
     {name = "dbruce-ae05",email = "dbruce.ae05@gmail.com"}
 ]
 readme = "README.md"
+license = "GPL-3.0-or-later"
+repository = 'https://github.com/dbruce-ae05/orm_maker'
+homepage = 'https://github.com/dbruce-ae05/orm_maker'
+keywords = ['ORM', 'orm', 'object', 'relational', 'model', 'sql', 'sqlalchemy']
 requires-python = ">=3.9"
 dependencies = [
     "pydantic (>=2.11.3,<3.0.0)",
