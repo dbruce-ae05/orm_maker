@@ -45,4 +45,4 @@ def sync_with_pyproject() -> list:
 def make_example() -> None:
     input = PROJECT_ROOT.joinpath("example").joinpath("example.csv")
     output = PROJECT_ROOT.joinpath("example").joinpath("example.py")
-    make_orm_helper(input, output, accept_changes=True, write_changes=False, overwrite=False)
+    make_orm_helper(input, output, accept_changes=True, write_changes=False, overwrite=True)

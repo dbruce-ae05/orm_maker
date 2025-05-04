@@ -1,14 +1,12 @@
 [project]
 name = "orm-maker"
-version = "0.1.6"
+version = "0.1.19"
 description = "Objection Relation Model Maker for SQLAlchemy"
 authors = [
     {name = "dbruce-ae05",email = "dbruce.ae05@gmail.com"}
 ]
 readme = "README.md"
 license = "GPL-3.0-or-later"
-repository = 'https://github.com/dbruce-ae05/orm-maker'
-homepage = 'https://github.com/dbruce-ae05/orm-maker'
 keywords = ['ORM', 'orm', 'object', 'relational', 'model', 'sql', 'sqlalchemy']
 requires-python = ">=3.9"
 dependencies = [
@@ -20,6 +18,11 @@ dependencies = [
     "pendulum (>=3.0.0,<4.0.0)",
     "pyaml (>=25.1.0,<26.0.0)",
 ]
+
+[project.urls]
+homepage = 'https://github.com/dbruce-ae05/orm_maker'
+repository = 'https://github.com/dbruce-ae05/orm_maker'
+"Bug Tracker" = 'https://github.com/dbruce-ae05/orm_maker/issues'
 
 [project.scripts]
 ormm = 'orm_maker.ormm:cli'
@@ -44,13 +47,13 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 
 [tool.poe.tasks.bti]
-sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'build', 'install', 'pipx']
+sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'build', 'install', 'pipx', 'example']
 
 [tool.poe.tasks.btp]
-sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'patch', 'build', 'install', 'pipx']
+sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'patch', 'build', 'install', 'pipx', 'example']
 
 [tool.poe.tasks.btm]
-sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'minor', 'build', 'install', 'pipx']
+sequence = ['sync', 'ruffcheck', 'ruffformat', 'test', 'minor', 'build', 'install', 'pipx', 'example']
 
 [tool.poe.tasks.sync]
 script = 'other.publish_actions:sync_with_pyproject'

@@ -233,8 +233,10 @@ def make_enums(df: polars.DataFrame) -> list:
         enums = row["enumeration"].split("|")
         enums = [replace_chars(enum) for enum in enums]
         enum: str
+        cnt: int = 0
         for enum in enums:
-            result.append(f"    {enum} = '{enum.lower()}'")
+            result.append(f"    {enum.upper()} = {cnt}")
+            cnt += 1
 
         result.append("")
 
@@ -277,6 +279,11 @@ def make_base_class(df: polars.DataFrame) -> list:
         # lhs first
         lhs = f"{column}: "
         if list_ or dict_:
+            if dict_:
+                sadtype = "dict"
+            if list_:
+                sadtype = "list"
+
             lhs += "ClassVar["
         else:
             lhs += "Mapped["
@@ -311,7 +318,7 @@ def make_base_class(df: polars.DataFrame) -> list:
     return result
 
 
-def make_classes(df: polars.DataFrame) -> list:
+def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
     result: list = list()
     tables = (
         df.filter(polars.col("table") != "!").unique(["schema", "table"]).sort(["schema", "table", "key", "column"])
@@ -342,6 +349,7 @@ def make_classes(df: polars.DataFrame) -> list:
             nullable: bool = bool(col["nullable"])
             enum: bool = bool(col["enumeration"])
             key: bool = bool(col["key"])
+            link: bool = bool(col["linked_field"])
             list_: bool = "list" in dtype.lower()
             dict_: bool = "dict" in dtype.lower()
 
@@ -360,6 +368,12 @@ def make_classes(df: polars.DataFrame) -> list:
             lhs = f"{column}: "
 
             if list_ or dict_:
+                if dict_:
+                    sadtype = "dict"
+
+                if list_:
+                    sadtype = "list"
+
                 lhs += "ClassVar["
             else:
                 lhs += "Mapped["
@@ -381,6 +395,9 @@ def make_classes(df: polars.DataFrame) -> list:
             if enum:
                 rhs += f"sqlalchemy.Enum({dtype})"
 
+            if link:
+                rhs += f"{dtype}, ForeignKey('{col['schema']}.{col['linked_field']}')"
+
             rhs += ")"
 
             if list_ or dict_:
@@ -391,6 +408,11 @@ def make_classes(df: polars.DataFrame) -> list:
             else:
                 result.append(f"    {lhs} = {rhs}")
 
+            if link:
+                link_table = col["linked_field"].split(".")[0]
+                # link_column = col["linked_field"].split(".")[1]
+                result.append(f"    {link_table} = relationship('{link_table.upper()}' , foreign_keys=[{column}])")
+
             if col["repr"]:
                 repr.append(f"{column}={{self.{column}}}")
 
@@ -399,10 +421,17 @@ def make_classes(df: polars.DataFrame) -> list:
         result.append(f"        return f'<{table.upper()}=({', '.join(repr)})>'")
         result.append("")
 
-        base_cols = df.filter(polars.col("table") == "!").get_column("column")
-        if "id" in cols or "id" in base_cols:
+        base_cols = list(df.filter(polars.col("table") == "!").get_column("column"))
+        table_cols = list(cols.get_column("column"))
+        if make_eq and ("id" in table_cols or "id" in base_cols):
             result.append("    def __eq__(self, other) -> bool:")
-            result.append(f"        return type(other) is {table.upper()} and other.id == self.id")
+            result.append(f"        if type(other) is {table.upper()}:")
+            result.append("            if other.id == self.id:")
+            result.append("                return True")
+            result.append("        return False")
+            result.append("")
+            result.append("    def __hash__(self) -> int:")
+            result.append("        return hash(self.id)")
 
         result.append("\n")
 
@@ -415,9 +444,12 @@ def make_module_main(output: Path | str) -> list:
 
     result: list = list()
 
-    result.append("def main():")
+    result.append("def make_db():")
     result.append(f"    engine = create_engine('sqlite:///{output.with_suffix('.sqlite')}', echo=True)")
     result.append("    Base.metadata.create_all(engine)")
+    result.append("")
+    result.append("def main():")
+    result.append("    make_db()")
     result.append("")
     result.append("if __name__ == '__main__':")
     result.append("    main()")
@@ -426,15 +458,18 @@ def make_module_main(output: Path | str) -> list:
 
 
 def make_orm_helper(
-    input: Path, output: Path, accept_changes: bool = False, write_changes: bool = False, overwrite: bool = False
+    input: Path,
+    output: Path,
+    accept_changes: bool = False,
+    write_changes: bool = False,
+    overwrite: bool = False,
+    make_eq: bool = False,
 ) -> Status_Code:
     if not input.exists():
         raise FileExistsError(f"{str(input.absolute())} does not exist")
 
     if output.exists() and not overwrite:
         output = get_next_file_name(output)
-
-    print(output)
 
     df = validate_input_file(input, output, accept_changes, write_changes, overwrite)
     if df is None:
@@ -449,7 +484,7 @@ def make_orm_helper(
     result.extend("\n")
     result.extend(make_base_class(df))
     result.extend("\n")
-    result.extend(make_classes(df))
+    result.extend(make_classes(df, make_eq=make_eq))
     result.extend("\n")
     result.extend(make_module_main(output))
 
