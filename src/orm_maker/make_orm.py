@@ -326,12 +326,8 @@ def make_classes(df: polars.DataFrame) -> list:
         column: str = str()
         dtype: str = str()
         cols = df.filter(polars.col("table") == table)
-        versioned: bool = any(cols.get_column("versioned"))
 
-        if versioned:
-            result.append(f"class {table.upper()}(Base, Versioned):")
-        else:
-            result.append(f"class {table.upper()}(Base):")
+        result.append(f"class {table.upper()}(Base):")
 
         result.append("")
         result.append(f"    __tablename__ = '{table.lower()}'")
