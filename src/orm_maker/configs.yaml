@@ -1,0 +1,21 @@
+types_map:
+  BigInteger: int
+  Boolean: bool
+  Date: datetime.datetime
+  DateTime: datetime.datetime
+  Double: float
+  Enum: class
+  Float: float
+  Integer: int
+  Interval: datetime.timedelta
+  LargeBinary: byte
+  MatchType: None
+  Numeric: float
+  PickleType: bytes
+  SchemaType: None
+  SmallInteger: int
+  String: str
+  Text: str
+  Unicode: str
+  UnicodeText: str
+  Uuid: uuid.UUID
