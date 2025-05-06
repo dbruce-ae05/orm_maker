@@ -1,6 +1,6 @@
 [project]
 name = "orm-maker"
-version = "0.1.22"
+version = "0.1.24"
 description = "Objection Relation Model Maker for SQLAlchemy"
 authors = [
     {name = "dbruce-ae05",email = "dbruce.ae05@gmail.com"}
@@ -70,8 +70,14 @@ script = 'orm_maker.app_logging:clear_logs'
 [tool.poe.tasks.build]
 cmd = 'poetry build'
 
-[tool.poe.tasks.example]
+[tool.poe.tasks.make_example]
 script = 'other.publish_actions:make_example'
+
+[tool.poe.tasks.make_example_db]
+script = 'example.example:make_db("sqlite:///example.sqlite")'
+
+[tool.poe.tasks.example]
+sequence = ['make_example', 'make_example_db']
 
 [tool.poe.tasks.ruff]
 sequence = ['ruffcheck', 'ruffformat']

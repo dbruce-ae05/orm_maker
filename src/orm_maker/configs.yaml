@@ -19,3 +19,4 @@ types_map:
   Unicode: str
   UnicodeText: str
   Uuid: uuid.UUID
+connection_string: '///orm.sqlite'

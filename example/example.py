@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-06 14:01:05.006057-04:00,
-using orm-maker v0.1.21,
+This module was made by shout on 2025-05-06 14:51:26.556140-04:00,
+using orm-maker v0.1.23,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -87,12 +87,6 @@ ORMClass: TypeAlias = (CARS
     |TIRES)
 
 
-def make_db():
-    engine = create_engine('sqlite:////Users/shout/Documents/Code/Python/orm_maker/example/example.sqlite', echo=True)
+def make_db(connection_string):
+    engine = create_engine(connection_string, echo=True)
     Base.metadata.create_all(engine)
-
-def main():
-    make_db()
-
-if __name__ == '__main__':
-    main()

@@ -443,24 +443,12 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
     return result
 
 
-def make_module_main(output: Path | str, conn_str: str | None) -> list:
-    if isinstance(output, str):
-        output = Path(output)
-
+def make_module_main() -> list:
     result: list = list()
 
-    if not conn_str:
-        conn_str = f"sqlite:///{output.with_suffix('.sqlite')}"
-
-    result.append("def make_db():")
-    result.append(f"    engine = create_engine('{conn_str}', echo=True)")
+    result.append("def make_db(connection_string):")
+    result.append("    engine = create_engine(connection_string, echo=True)")
     result.append("    Base.metadata.create_all(engine)")
-    result.append("")
-    result.append("def main():")
-    result.append("    make_db()")
-    result.append("")
-    result.append("if __name__ == '__main__':")
-    result.append("    main()")
 
     return result
 
@@ -495,7 +483,7 @@ def make_orm_helper(
     result.extend("\n")
     result.extend(make_classes(df, make_eq=make_eq))
     result.extend("\n")
-    result.extend(make_module_main(output=output, conn_str=conn_str))
+    result.extend(make_module_main())
 
     with open(output, "w") as f:
         f.write("\n".join(result))
