@@ -202,7 +202,7 @@ def make_module_imports(df: polars.DataFrame) -> list:
     result.append("from sqlalchemy import create_engine")
     result.append("from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship")
     result.append("from sqlalchemy import ForeignKey")
-    result.append("from typing import List, Optional, Dict, ClassVar")
+    result.append("from typing import List, Optional, Dict, ClassVar, TypeAlias")
     result.append("import datetime")
 
     result = list(set(result))
@@ -435,6 +435,10 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
 
         result.append("\n")
 
+    # make a typealias for all of the classes above
+    classes = [ormclass.upper() for ormclass in tables.get_column("table")]
+    ormclass_typealias = f"ORMClass: TypeAlias = ({'\n    |'.join(classes)})"
+    result.append(ormclass_typealias)
     return result
 
 

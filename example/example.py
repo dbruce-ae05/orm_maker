@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-04 20:04:28.839693-04:00,
-using orm-maker v0.1.18,
+This module was made by shout on 2025-05-06 10:03:42.995770-04:00,
+using orm-maker v0.1.19,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -12,7 +12,7 @@ from sqlalchemy import String
 from sqlalchemy import Uuid
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from typing import List, Optional, Dict, ClassVar
+from typing import List, Optional, Dict, ClassVar, TypeAlias
 import datetime
 import enum
 import sqlalchemy
@@ -82,6 +82,9 @@ class TIRES(Base):
 
 
 
+ORMClass: TypeAlias = (CARS
+    |PEOPLE
+    |TIRES)
 
 
 def make_db():
