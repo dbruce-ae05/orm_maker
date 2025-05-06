@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-06 10:03:42.995770-04:00,
-using orm-maker v0.1.19,
+This module was made by shout on 2025-05-06 10:09:29.579382-04:00,
+using orm-maker v0.1.20,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 

@@ -437,7 +437,8 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
 
     # make a typealias for all of the classes above
     classes = [ormclass.upper() for ormclass in tables.get_column("table")]
-    ormclass_typealias = f"ORMClass: TypeAlias = ({'\n    |'.join(classes)})"
+    delim = "\n    |"
+    ormclass_typealias = f"ORMClass: TypeAlias = ({delim.join(classes)})"
     result.append(ormclass_typealias)
     return result
 
