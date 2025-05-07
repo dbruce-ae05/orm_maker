@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-06 14:51:26.556140-04:00,
-using orm-maker v0.1.23,
+This module was made by shout on 2025-05-07 00:01:33.245802-04:00,
+using orm-maker v0.1.24,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -50,7 +50,7 @@ class CARS(Base):
     year: Mapped[Optional[int]] = mapped_column()
 
     def __repr__(self) -> str:
-        return f'<CARS=(made_on={self.made_on}, make={self.make}, model={self.model}, year={self.year})>'
+        return f'<CARS=(make={self.make}, model={self.model}, made_on={self.made_on}, year={self.year}, seats={self.seats}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
 
 
@@ -62,7 +62,7 @@ class PEOPLE(Base):
     relatives: ClassVar[Optional[dict]]
 
     def __repr__(self) -> str:
-        return f'<PEOPLE=(first={self.first})>'
+        return f'<PEOPLE=(first={self.first}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
 
 
@@ -78,7 +78,7 @@ class TIRES(Base):
     cars = relationship('CARS' , foreign_keys=[rubber])
 
     def __repr__(self) -> str:
-        return f'<TIRES=(made_on={self.made_on}, position={self.position}, rubber={self.rubber})>'
+        return f'<TIRES=(rubber={self.rubber}, car_id={self.car_id}, made_on={self.made_on}, position={self.position}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
 
 

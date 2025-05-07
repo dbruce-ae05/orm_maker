@@ -325,6 +325,12 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
     )
     type_map = get_config(["types_map"])
 
+    # create list of reprs for base attributes, will use to extend the repr list down below
+    df_base = df.filter(polars.col("table") == "!", polars.col("repr") > 0)
+    base_repr: list = list()
+    for row in df_base.iter_rows(named=True):
+        base_repr.append((row["repr"], f"{row['column']}={{self.{row['column']}}}"))
+
     for row_table in tables.iter_rows(named=True):
         schema = row_table["schema"]
         table = row_table["table"]
@@ -414,8 +420,11 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
                 result.append(f"    {link_table} = relationship('{link_table.upper()}' , foreign_keys=[{column}])")
 
             if col["repr"]:
-                repr.append(f"{column}={{self.{column}}}")
+                repr.append((col["repr"], f"{column}={{self.{column}}}"))
 
+        repr.extend(base_repr)
+        repr = sorted(repr)
+        repr = [value for _, value in repr]
         result.append("")
         result.append("    def __repr__(self) -> str:")
         result.append(f"        return f'<{table.upper()}=({', '.join(repr)})>'")
