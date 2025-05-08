@@ -399,7 +399,7 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
                 rhs += "primary_key=True"
 
             if enum:
-                rhs += f"sqlalchemy.Enum({dtype})"
+                rhs += f"sqlalchemy.Enum({dtype}, schema='{schema}')"
 
             if link:
                 rhs += f"{dtype}, ForeignKey('{col['schema']}.{col['linked_field']}')"

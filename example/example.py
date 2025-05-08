@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-07 00:01:33.245802-04:00,
-using orm-maker v0.1.24,
+This module was made by shout on 2025-05-08 09:22:08.768889-04:00,
+using orm-maker v0.1.25,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -73,7 +73,7 @@ class TIRES(Base):
     car_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('main.cars.id'))
     cars = relationship('CARS' , foreign_keys=[car_id])
     made_on: Mapped[Optional[datetime.datetime]] = mapped_column()
-    position: Mapped[Optional[TIRES_POSITION]] = mapped_column(sqlalchemy.Enum(TIRES_POSITION))
+    position: Mapped[Optional[TIRES_POSITION]] = mapped_column(sqlalchemy.Enum(TIRES_POSITION, schema='main'))
     rubber: Mapped[Optional[str]] = mapped_column(String, ForeignKey('main.cars.name'))
     cars = relationship('CARS' , foreign_keys=[rubber])
 
