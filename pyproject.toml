@@ -1,6 +1,6 @@
 [project]
 name = "orm-maker"
-version = "0.1.26"
+version = "0.1.27"
 description = "Objection Relation Model Maker for SQLAlchemy"
 authors = [
     {name = "dbruce-ae05",email = "dbruce.ae05@gmail.com"}

@@ -402,7 +402,7 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
                 rhs += f"sqlalchemy.Enum({dtype}, schema='{schema}')"
 
             if link:
-                rhs += f"{dtype}, ForeignKey('{col['schema']}.{col['linked_field']}')"
+                rhs += f"{dtype}, ForeignKey('{col['schema']}.{col['linked_field']}', name='fk_{schema}_{table}_{column}_to_{col['linked_field']}')"
 
             rhs += ")"
 

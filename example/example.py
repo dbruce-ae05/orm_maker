@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-08 09:22:08.768889-04:00,
-using orm-maker v0.1.25,
+This module was made by shout on 2025-05-08 09:43:02.377284-04:00,
+using orm-maker v0.1.26,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -70,11 +70,11 @@ class TIRES(Base):
 
     __tablename__ = 'tires'
     __table_args__ = {'schema': 'main'}
-    car_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('main.cars.id'))
+    car_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('main.cars.id', name='fk_main_tires_car_id_to_cars.id'))
     cars = relationship('CARS' , foreign_keys=[car_id])
     made_on: Mapped[Optional[datetime.datetime]] = mapped_column()
     position: Mapped[Optional[TIRES_POSITION]] = mapped_column(sqlalchemy.Enum(TIRES_POSITION, schema='main'))
-    rubber: Mapped[Optional[str]] = mapped_column(String, ForeignKey('main.cars.name'))
+    rubber: Mapped[Optional[str]] = mapped_column(String, ForeignKey('main.cars.name', name='fk_main_tires_rubber_to_cars.name'))
     cars = relationship('CARS' , foreign_keys=[rubber])
 
     def __repr__(self) -> str:
