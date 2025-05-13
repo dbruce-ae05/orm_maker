@@ -1,6 +1,6 @@
 '''
-This module was made by shout on 2025-05-08 09:46:39.921574-04:00,
-using orm-maker v0.1.27,
+This module was made by shout on 2025-05-13 15:43:14.986881-04:00,
+using orm-maker v0.1.28,
 input file: <bound method Path.absolute of PosixPath('/Users/shout/Documents/Code/Python/orm_maker/example/example.csv')>
 '''
 
@@ -52,6 +52,22 @@ class CARS(Base):
     def __repr__(self) -> str:
         return f'<CARS=(make={self.make}, model={self.model}, made_on={self.made_on}, year={self.year}, seats={self.seats}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
+    def update_object(self, obj) -> bool:
+        if not isinstance(obj, CARS):
+            return False
+
+        self.made_on = obj.made_on
+        self.make = obj.make
+        self.model = obj.model
+        self.name = obj.name
+        self.seats = obj.seats
+        self.year = obj.year
+        self.id = obj.id
+        self.revby = obj.revby
+        self.revdate = obj.revdate
+        self.valid = obj.valid
+
+        return True
 
 
 class PEOPLE(Base):
@@ -64,22 +80,48 @@ class PEOPLE(Base):
     def __repr__(self) -> str:
         return f'<PEOPLE=(first={self.first}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
+    def update_object(self, obj) -> bool:
+        if not isinstance(obj, PEOPLE):
+            return False
+
+        self.first = obj.first
+        self.relatives = obj.relatives
+        self.id = obj.id
+        self.revby = obj.revby
+        self.revdate = obj.revdate
+        self.valid = obj.valid
+
+        return True
 
 
 class TIRES(Base):
 
     __tablename__ = 'tires'
     __table_args__ = {'schema': 'main'}
-    car_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('main.cars.id', name='fk_88d56c29-8821-4cf1-a9e6-79682b5c9d65'))
+    car_id: Mapped[uuid.UUID] = mapped_column(Uuid, ForeignKey('main.cars.id', name='fk_82ce745c-851e-4d5c-b807-11b34b22e34a'))
     cars = relationship('CARS' , foreign_keys=[car_id])
     made_on: Mapped[Optional[datetime.datetime]] = mapped_column()
     position: Mapped[Optional[TIRES_POSITION]] = mapped_column(sqlalchemy.Enum(TIRES_POSITION, schema='main'))
-    rubber: Mapped[Optional[str]] = mapped_column(String, ForeignKey('main.cars.name', name='fk_eb7e7a79-be81-486f-8fab-8019c77637f5'))
+    rubber: Mapped[Optional[str]] = mapped_column(String, ForeignKey('main.cars.name', name='fk_dbd17f10-8ef7-420c-bfd9-8d29424bc65a'))
     cars = relationship('CARS' , foreign_keys=[rubber])
 
     def __repr__(self) -> str:
         return f'<TIRES=(rubber={self.rubber}, car_id={self.car_id}, made_on={self.made_on}, position={self.position}, valid={self.valid}, revby={self.revby}, revdate={self.revdate})>'
 
+    def update_object(self, obj) -> bool:
+        if not isinstance(obj, TIRES):
+            return False
+
+        self.car_id = obj.car_id
+        self.made_on = obj.made_on
+        self.position = obj.position
+        self.rubber = obj.rubber
+        self.id = obj.id
+        self.revby = obj.revby
+        self.revdate = obj.revdate
+        self.valid = obj.valid
+
+        return True
 
 
 ORMClass: TypeAlias = (CARS

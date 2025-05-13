@@ -319,7 +319,7 @@ def make_base_class(df: polars.DataFrame) -> list:
     return result
 
 
-def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
+def make_classes(df: polars.DataFrame, make_update: bool = True) -> list:
     result: list = list()
     tables = (
         df.filter(polars.col("table") != "!").unique(["schema", "table"]).sort(["schema", "table", "key", "column"])
@@ -431,17 +431,25 @@ def make_classes(df: polars.DataFrame, make_eq: bool = False) -> list:
         result.append(f"        return f'<{table.upper()}=({', '.join(repr)})>'")
         result.append("")
 
-        base_cols = list(df.filter(polars.col("table") == "!").get_column("column"))
         table_cols = list(cols.get_column("column"))
-        if make_eq and ("id" in table_cols or "id" in base_cols):
-            result.append("    def __eq__(self, other) -> bool:")
-            result.append(f"        if type(other) is {table.upper()}:")
-            result.append("            if other.id == self.id:")
-            result.append("                return True")
-            result.append("        return False")
-            result.append("")
-            result.append("    def __hash__(self) -> int:")
-            result.append("        return hash(self.id)")
+        table_cols.extend(list(df.filter(polars.col("table") == "!").get_column("column")))
+
+        prim_keys: list = list(df.filter(polars.col("table") == "!", polars.col("key") is True).get_column("column"))
+        prim_keys.extend(cols.filter(polars.col("key") is True).get_column("column"))
+
+        update_col = [col for col in table_cols if col not in prim_keys]
+
+        result.append("    def update_object(self, obj) -> bool:")
+        result.append(f"        if not isinstance(obj, {table.upper()}):")
+        result.append("            return False")
+        result.append("")
+        for col in update_col:
+            result.append(f"        self.{col} = obj.{col}")
+        result.append("")
+        result.append("        return True")
+
+        if make_update:
+            pass
 
         result.append("\n")
 
@@ -470,7 +478,7 @@ def make_orm_helper(
     write_changes: bool = False,
     conn_str: str | None = None,
     overwrite: bool = False,
-    make_eq: bool = False,
+    make_update: bool = True,
 ) -> Status_Code:
     if not input.exists():
         raise FileExistsError(f"{str(input.absolute())} does not exist")
@@ -491,7 +499,7 @@ def make_orm_helper(
     result.extend("\n")
     result.extend(make_base_class(df))
     result.extend("\n")
-    result.extend(make_classes(df, make_eq=make_eq))
+    result.extend(make_classes(df, make_update=make_update))
     result.extend("\n")
     result.extend(make_module_main())
 
